@@ -11,6 +11,7 @@ For faster setup, we're kept our Chatwoot credentials in codebase. These are tem
 with these variables 
 
 AFFINE_ADMIN_EMAIL=your-email
+
 AFFINE_ADMIN_PASSWORD= your-password
 CHATWOOT_SECRET_KEY_BASE=your-secret-key
 
