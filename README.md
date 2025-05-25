@@ -36,6 +36,9 @@ cd backend
 # install required packages
 npm i
 
+# install express
+npm i express
+
 # Start backend server
 node src/index.js
 ```
