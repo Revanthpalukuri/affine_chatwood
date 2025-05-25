@@ -1,0 +1,330 @@
+.workspace-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--background-color, #ffffff);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+.workspace-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--accent-color, #e0e0e0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background-color, #ffffff);
+  border-radius: 8px 8px 0 0;
+}
+
+.workspace-branding {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tenant-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.workspace-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-color, #333);
+  font-weight: 600;
+}
+
+.workspace-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.open-workspace-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color, #4a90e2);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.open-workspace-btn:hover {
+  background-color: var(--secondary-color, #357abd);
+  transform: translateY(-1px);
+}
+
+.open-workspace-btn:active {
+  transform: translateY(0);
+}
+
+.workspace-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--background-color, #ffffff);
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace-placeholder {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.workspace-placeholder h3 {
+  font-size: 2rem;
+  color: var(--text-color, #333);
+  margin-bottom: 1rem;
+}
+
+.workspace-placeholder p {
+  font-size: 1.1rem;
+  color: var(--text-color, #666);
+  margin-bottom: 3rem;
+}
+
+.workspace-placeholder.error {
+  color: #dc3545;
+  padding: 2rem;
+  background-color: #fff5f5;
+  border-radius: 8px;
+  border: 1px solid #ffcdd2;
+}
+
+.error-instructions {
+  margin-top: 2rem;
+  text-align: left;
+  background-color: var(--background-color, #fff);
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--accent-color, #e0e0e0);
+}
+
+.error-instructions h4 {
+  color: var(--text-color, #333);
+  margin-bottom: 1rem;
+}
+
+.error-instructions ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.error-instructions li {
+  margin-bottom: 0.5rem;
+  color: var(--text-color, #666);
+}
+
+.error-instructions li:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.workspace-placeholder.loading {
+  animation: pulse 1.5s infinite;
+}
+
+.workspace-placeholder.loading h3 {
+  color: var(--primary-color, #4a90e2);
+}
+
+.workspace-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.feature {
+  padding: 1.5rem;
+  background-color: var(--accent-color, #f8f9fa);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+.feature h4 {
+  font-size: 1.2rem;
+  color: var(--text-color, #333);
+  margin-bottom: 0.5rem;
+}
+
+.feature p {
+  font-size: 1rem;
+  color: var(--text-color, #666);
+  margin: 0;
+}
+
+.workspace-content::before {
+  content: "If you can't see the workspace, click 'Open in New Tab' above";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #666;
+  text-align: center;
+  display: none;
+}
+
+.workspace-content:empty::before {
+  display: block;
+}
+
+.workspace-editor {
+  background-color: #fafafa;
+  border-radius: 4px;
+  padding: 1rem;
+  min-height: 200px;
+}
+
+.tenant-contact {
+  margin-top: 3rem;
+  padding: 2rem;
+  background-color: var(--accent-color, #f8f9fa);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.tenant-contact h4 {
+  color: var(--text-color, #333);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.tenant-contact p {
+  color: var(--text-color, #666);
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .workspace-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .workspace-branding {
+    flex-direction: column;
+  }
+
+  .tenant-logo {
+    height: 32px;
+  }
+
+  .workspace-content {
+    padding: 1rem;
+  }
+
+  .workspace-features {
+    grid-template-columns: 1fr;
+  }
+
+  .tenant-contact {
+    margin-top: 2rem;
+    padding: 1.5rem;
+  }
+}
+
+.notification-banner {
+  position: relative;
+  width: 100%;
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideDown 0.3s ease-out;
+  z-index: 1000;
+}
+
+.notification-banner.info {
+  background-color: #e0f2fe;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+}
+
+.notification-banner.warning {
+  background-color: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.notification-banner p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.notification-banner .close-banner {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.notification-banner .close-banner:hover {
+  opacity: 1;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.theme-modern-minimalist .notification-banner {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.theme-corporate-professional .notification-banner {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.theme-tech-forward .notification-banner {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.theme-creative-studio .notification-banner {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .notification-banner {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .notification-banner p {
+    font-size: 0.875rem;
+    padding-right: 1.5rem;
+  }
+} 

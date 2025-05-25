@@ -1,0 +1,163 @@
+services:
+  # Existing Affine Services
+  affine:
+    image: ghcr.io/toeverything/affine-graphql:stable
+    container_name: affine_selfhosted
+    command:
+      ['sh', '-c', 'node ./scripts/self-host-predeploy && node ./dist/index.js']
+    ports:
+      - '3010:3010'
+      - '5555:5555'
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./.affine/self-host/config:/root/.affine/config
+      - ./.affine/self-host/storage:/root/.affine/storage
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '1000m'
+    restart: unless-stopped
+    environment:
+      - NODE_OPTIONS="--import=./scripts/register.js"
+      - AFFINE_CONFIG_PATH=/root/.affine/config
+      - REDIS_SERVER_HOST=redis
+      - DATABASE_URL=postgres://affine:affine_password123@postgres:5432/affine
+      - NODE_ENV=production
+      - AFFINE_ADMIN_EMAIL=${AFFINE_ADMIN_EMAIL}
+      - AFFINE_ADMIN_PASSWORD=${AFFINE_ADMIN_PASSWORD}
+      - TELEMETRY_ENABLE=false
+
+  redis:
+    image: redis
+    container_name: affine_redis
+    restart: unless-stopped
+    volumes:
+      - ./.affine/self-host/redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:15.3-alpine
+    container_name: affine_postgres
+    restart: unless-stopped
+    volumes:
+      - ./.affine/self-host/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U affine']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: affine
+      POSTGRES_PASSWORD: affine_password123
+      POSTGRES_DB: affine
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+  # Chatwoot Services
+  chatwoot_web:
+    image: chatwoot/chatwoot:latest
+    container_name: chatwoot_web
+    ports:
+      - '4100:3000'  # Chatwoot will be available on localhost:4100
+    depends_on:
+      chatwoot_postgres:
+        condition: service_healthy
+      chatwoot_redis:
+        condition: service_healthy
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=your_secret_key_base_here_generate_a_long_random_string
+      - POSTGRES_HOST=chatwoot_postgres
+      - POSTGRES_USERNAME=chatwoot
+      - POSTGRES_PASSWORD=chatwoot_password123
+      - POSTGRES_DATABASE=chatwoot_production
+      - REDIS_URL=redis://chatwoot_redis:6379
+      - REDIS_PASSWORD=
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_TO_STDOUT=true
+      - USE_INBOX_AVATAR_FOR_BOT=true
+      - FRONTEND_URL=http://localhost:4100
+      - FORCE_SSL=false
+      - ENABLE_ACCOUNT_SIGNUP=true
+      # Email Configuration (Optional - configure as needed)
+      - MAILER_SENDER_EMAIL=noreply@localhost
+      - SMTP_DOMAIN=localhost
+      - SMTP_ADDRESS=localhost
+      - SMTP_PORT=587
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - SMTP_AUTHENTICATION=
+      - SMTP_ENABLE_STARTTLS_AUTO=true
+    volumes:
+      - ./.chatwoot/storage:/app/storage
+      - ./.chatwoot/public:/app/public
+    restart: unless-stopped
+    command: ['sh', '-c', 'bundle exec rails db:chatwoot_prepare && bundle exec rails s -p 3000 -b 0.0.0.0']
+
+  chatwoot_worker:
+    image: chatwoot/chatwoot:latest
+    container_name: chatwoot_worker
+    depends_on:
+      chatwoot_postgres:
+        condition: service_healthy
+      chatwoot_redis:
+        condition: service_healthy
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=your_secret_key_base_here_generate_a_long_random_string
+      - POSTGRES_HOST=chatwoot_postgres
+      - POSTGRES_USERNAME=chatwoot
+      - POSTGRES_PASSWORD=chatwoot_password123
+      - POSTGRES_DATABASE=chatwoot_production
+      - REDIS_URL=redis://chatwoot_redis:6379
+      - REDIS_PASSWORD=
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_TO_STDOUT=true
+    volumes:
+      - ./.chatwoot/storage:/app/storage
+    restart: unless-stopped
+    command: ['bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml']
+
+  chatwoot_postgres:
+    image: postgres:13-alpine
+    container_name: chatwoot_postgres
+    restart: unless-stopped
+    ports:
+      - '5433:5432'  # Different port to avoid conflict with Affine's postgres
+    volumes:
+      - ./.chatwoot/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: chatwoot
+      POSTGRES_PASSWORD: chatwoot_password123
+      POSTGRES_DB: chatwoot_production
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U chatwoot']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chatwoot_redis:
+    image: redis:6-alpine
+    container_name: chatwoot_redis
+    restart: unless-stopped
+    ports:
+      - '6380:6379'  # Different port to avoid conflict with Affine's redis
+    volumes:
+      - ./.chatwoot/redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  default:
+    name: affine_chatwoot_network
