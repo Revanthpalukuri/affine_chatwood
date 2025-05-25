@@ -190,3 +190,21 @@ For a production environment:
 - `GET /api/chatwoot/inboxes/:id` - Get inbox details
 - `PUT /api/chatwoot/inboxes/:id` - Update inbox
 - `DELETE /api/chatwoot/inboxes/:id` - Delete inbox
+
+## Tenant Access
+
+The application supports multi-tenant access through URL parameters. Each tenant has its own isolated workspace.
+
+### Default Tenant
+- URL: `http://localhost:3000?tenant=default`
+- This is the default workspace that users see when no tenant is specified.
+
+### Available Tenants
+The following tenant workspaces are available:
+- Atlassian: `http://localhost:3000?tenant=atlassian`
+- Acme: `http://localhost:3000?tenant=acme`
+- Nexus: `http://localhost:3000?tenant=nexus`
+- Harmony: `http://localhost:3000?tenant=harmony`
+
+### Tenant Not Found
+If you try to access a non-existent tenant (e.g., `http://localhost:3000?tenant=unknown`), the system will display a "Tenant not found" error page.
