@@ -18,16 +18,14 @@ CHATWOOT_SECRET_KEY_BASE=your-secret-key
 
 ## Running the Services
 
-### 1. Affine Workspace (Docker) 
+### 1. Frontend Application
 ```bash
-# Navigate to affine directory
-cd docker/affine
 
-# Start Affine service
-docker compose up -d
+# install required packages
+npm i
 
-# To stop Affine service
-docker compose down
+# In the root directory
+npm start
 ```
 
 ### 2. Backend Server
@@ -42,15 +40,19 @@ npm i
 node src/index.js
 ```
 
-### 3. Frontend Application
+### 3. Affine Workspace (Docker) 
 ```bash
+# Navigate to affine directory
+cd docker/affine
 
-# install required packages
-npm i
+# Start Affine service
+docker compose up -d
 
-# In the root directory
-npm start
+# To stop Affine service
+docker compose down
 ```
+
+
 
 The services will be available at:
 - Frontend: http://localhost:3000
