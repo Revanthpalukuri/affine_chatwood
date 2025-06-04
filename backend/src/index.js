@@ -20,6 +20,23 @@ const chatwootApi = axios.create({
   }
 });
 
+const WELCOME_TAGLINES = [
+  "We're here to help you succeed!",
+  "How can we make your day better?",
+  "Your support team is just a message away!",
+  "Let us know how we can assist you.",
+  "Welcome! How can we help you today?",
+  "Need help? We're always here!",
+  "Ask us anything, anytime!",
+  "We're happy to support you!",
+  "Your satisfaction is our priority!",
+  "Let's solve it together!"
+];
+
+function getRandomWelcomeTagline() {
+  return WELCOME_TAGLINES[Math.floor(Math.random() * WELCOME_TAGLINES.length)];
+}
+
 const chatwootService = {
   async createInbox(tenantName, branding) {
     try {
@@ -40,8 +57,8 @@ const chatwootService = {
         channel: {
           type: "web_widget",
           website_url: "http://localhost:3001/",
-          welcome_title: `Welcome to ${tenantName}`,
-          welcome_tagline: "We are here to help you",
+          welcome_title: `Welcome to ${tenantName} support`,
+          welcome_tagline: getRandomWelcomeTagline(),
           widget_color: branding.colors.primary
         },
         working_hours: [
@@ -142,7 +159,6 @@ const chatwootService = {
       });
 
       const inbox = inboxResponse.data;
-
       return {
         inboxId: inbox.id,
         channelId: inbox.channel_id,
@@ -244,7 +260,15 @@ let tenants = {
     chatwoot: {
       websiteToken: 'EnLeUXWwQeFicdvkKFDJkkfQ',
       launcherTitle: 'Chat with default Support',
-      baseUrl: 'https://app.chatwoot.com'
+      baseUrl: 'https://app.chatwoot.com',
+      widgetSettings: {
+        position: 'right',
+        type: 'expanded_bubble',
+        launcherTitle: 'Chat with default Support',
+        widgetStyle: {
+          launcherIcon: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?semt=ais_hybrid&w=740'
+        }
+      }
     },
     contact: {
       email: 'support@default.com',
@@ -257,12 +281,23 @@ let tenants = {
     name: 'Acme Corporation',
     branding: {
       logo: 'https://shorturl.at/Ch5Kt',
-      colors: { primary: '#FF0000' }
+      colors: { primary: '#FF5722' },
+      theme: {
+        name: 'acme',
+      }
     },
     chatwoot: {
       websiteToken: 'GuMkHPTdgVy8BAnpNWpeJ7VQ',
       launcherTitle: 'Chat with Acme Support',
-      baseUrl: 'https://app.chatwoot.com'
+      baseUrl: 'https://app.chatwoot.com',
+      widgetSettings: {
+        position: 'right',
+        type: 'expanded_bubble',
+        launcherTitle: 'Chat with Acme Support',
+        widgetStyle: {
+          launcherIcon: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?semt=ais_hybrid&w=740'
+        }
+      }
     },
     contact: {
       email: 'support@acme.com',
@@ -275,12 +310,23 @@ let tenants = {
     name: 'Nexus Technologies',
     branding: {
       logo: 'https://shorturl.at/tRckz',
-      colors: { primary: '#00FF00' }
+      colors: { primary: '#00BCD4' },
+      theme: {
+        name: 'nexus',
+      }
     },
     chatwoot: {
       websiteToken: '4sJ5CR3RrfdLPMKxxQXCuuJR',
       launcherTitle: 'Chat with Nexus Support',
-      baseUrl: 'https://app.chatwoot.com'
+      baseUrl: 'https://app.chatwoot.com',
+      widgetSettings: {
+        position: 'right',
+        type: 'expanded_bubble',
+        launcherTitle: 'Chat with Nexus Support',
+        widgetStyle: {
+          launcherIcon: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?semt=ais_hybrid&w=740'
+        }
+      }
     },
     contact: {
       email: 'support@nexus.com',
@@ -293,12 +339,23 @@ let tenants = {
     name: 'Harmony Solutions',
     branding: {
       logo: 'https://shorturl.at/q5Vca',
-      colors: { primary: '#800080' }
+      colors: { primary: '#8E24AA' },
+      theme: {
+        name: 'harmony',
+      }
     },
     chatwoot: {
       websiteToken: 'c5D2WBBS3TQMuL4mijvvsxa8',
       launcherTitle: 'Chat with Harmony Support',
-      baseUrl: 'https://app.chatwoot.com'
+      baseUrl: 'https://app.chatwoot.com',
+      widgetSettings: {
+        position: 'right',
+        type: 'expanded_bubble',
+        launcherTitle: 'Chat with Harmony Support',
+        widgetStyle: {
+          launcherIcon: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?semt=ais_hybrid&w=740'
+        }
+      }
     },
     contact: {
       email: 'support@harmony.com',
@@ -360,11 +417,29 @@ app.post('/api/tenants', validateTenantData, async (req, res) => {
   try {
     const { id, name, branding, contact } = req.body;
 
+    const theme = branding.theme || {
+      name: 'aurora-vivid',
+      typography: {
+        primary: 'Orbitron, sans-serif',
+        secondary: 'Arial, sans-serif',
+        baseSize: '16px',
+        scale: '1.13'
+      },
+      layout: {
+        borderRadius: '32px',
+        containerWidth: '1250px'
+      },
+      components: {
+        headerHeight: '80px'
+      }
+    };
+
     const tenantBranding = {
       ...branding,
       colors: {
         primary: branding.colors?.primary || getRandomBrandColor()
-      }
+      },
+      theme
     };
 
     const chatwootConfig = await chatwootService.createInbox(name, tenantBranding);
@@ -376,7 +451,15 @@ app.post('/api/tenants', validateTenantData, async (req, res) => {
       chatwoot: {
         ...chatwootConfig,
         launcherTitle: `Chat with ${name} Support`,
-        baseUrl: CHATWOOT_CONFIG.baseUrl
+        baseUrl: CHATWOOT_CONFIG.baseUrl,
+        widgetSettings: {
+          position: 'right',
+          type: 'expanded_bubble',
+          launcherTitle: `Chat with ${name} Support`,
+          widgetStyle: {
+            launcherIcon: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?semt=ais_hybrid&w=740'
+          }
+        }
       },
       contact
     };

@@ -61,7 +61,11 @@ export const TenantProvider = ({ children }) => {
       'theme-modern-minimalist',
       'theme-corporate-professional',
       'theme-tech-forward',
-      'theme-creative-studio'
+      'theme-creative-studio',
+      'theme-acme',
+      'theme-nexus',
+      'theme-harmony',
+      'theme-atlassian'
     );
 
     // Add current theme class

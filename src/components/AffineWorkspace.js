@@ -8,10 +8,7 @@ const CHATWOOT_CONFIG = {
   default: {
     websiteToken: 'EnLeUXWwQeFicdvkKFDJkkfQ',
     baseUrl: 'https://app.chatwoot.com',
-    locale: 'en',
-    position: 'right',
-    type: 'expanded_bubble',
-    launcherTitle: 'Chat with us'
+    launcherTitle: 'Chat with default Support'
   }
 };
 
@@ -224,6 +221,102 @@ const AffineWorkspace = () => {
     setIsOpen(true);
   };
 
+  // Feature content and layout by tenant
+  const getFeatureContent = () => {
+    switch (currentTenant?.id) {
+      case 'acme':
+        // Column layout, custom text
+        return (
+          <div className="workspace-features column-layout">
+            <div className="feature">
+              <h4>Enterprise Security</h4>
+              <p>All your data is protected with advanced encryption.</p>
+            </div>
+            <div className="feature">
+              <h4>Instant Team Chat</h4>
+              <p>Connect with support and your team in real time.</p>
+            </div>
+            <div className="feature">
+              <h4>Smart Collaboration</h4>
+              <p>AI-powered tools for seamless teamwork.</p>
+            </div>
+          </div>
+        );
+      case 'nexus':
+        // Row layout, custom text
+        return (
+          <div className="workspace-features row-layout">
+            <div className="feature">
+              <h4>Cloud Native</h4>
+              <p>Scale your workspace with our robust cloud platform.</p>
+            </div>
+            <div className="feature">
+              <h4>24/7 Tech Support</h4>
+              <p>Expert help is always available for your team.</p>
+            </div>
+            <div className="feature">
+              <h4>Live Sync</h4>
+              <p>Collaborate in real time, from anywhere.</p>
+            </div>
+          </div>
+        );
+      case 'harmony':
+        // Overlapped layout, custom text, less overlap for readability
+        return (
+          <div className="workspace-features overlap-layout harmony-overlap">
+            <div className="feature overlap1">
+              <h4>Creative Freedom</h4>
+              <p>Design, write, and brainstorm with no limits.</p>
+            </div>
+            <div className="feature overlap2">
+              <h4>Personal Support</h4>
+              <p>Our team is here to help you grow your ideas.</p>
+            </div>
+            <div className="feature overlap3">
+              <h4>Harmony Sync</h4>
+              <p>Work together in perfect sync, always.</p>
+            </div>
+          </div>
+        );
+      case 'atlassian':
+        // Unique zigzag/stepped layout, custom text
+        return (
+          <div className="workspace-features atlassian-zigzag-layout">
+            <div className="feature zigzag1">
+              <h4>Cloud Reliability</h4>
+              <p>Always-on infrastructure for your global teams.</p>
+            </div>
+            <div className="feature zigzag2">
+              <h4>AI Chat Assistant</h4>
+              <p>Smart, automated help and live support, 24/7.</p>
+            </div>
+            <div className="feature zigzag3">
+              <h4>Agile Collaboration</h4>
+              <p>Empower your teams to build, plan, and deliver together.</p>
+            </div>
+          </div>
+        );
+      default:
+        // Default fallback (column)
+        return (
+          <div className="workspace-features column-layout">
+            <div className="feature">
+              <h4>Self-Hosted Solution</h4>
+              <p>Your data stays on your server</p>
+            </div>
+            <div className="feature">
+              <h4>Integrated Chat Support</h4>
+              <p>Get help anytime with our chat widget</p>
+            </div>
+            <div className="feature">
+              <h4>Collaborative Editing</h4>
+              <p>Work together in real-time with your team</p>
+            </div>
+          </div>
+        );
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="workspace-container">
@@ -290,20 +383,7 @@ const AffineWorkspace = () => {
         <div className="workspace-placeholder">
           <h3>Welcome to {currentTenant?.name || 'Company'} Workspace</h3>
           <p>Click the button above to open your workspace in a new window.</p>
-          <div className="workspace-features">
-            <div className="feature">
-              <h4>Self-Hosted Solution</h4>
-              <p>Your data stays on your server</p>
-            </div>
-            <div className="feature">
-              <h4>Integrated Chat Support</h4>
-              <p>Get help anytime with our chat widget</p>
-            </div>
-            <div className="feature">
-              <h4>Collaborative Editing</h4>
-              <p>Work together in real-time with your team</p>
-            </div>
-          </div>
+          {getFeatureContent()}
           {currentTenant?.contact && (
             <div className="tenant-contact">
               <h4>Contact Information</h4>

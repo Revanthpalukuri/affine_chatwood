@@ -74,10 +74,9 @@ curl -X POST http://localhost:4000/api/tenants \
     "name": "Atlassian",
     "branding": {
       "logo": "https://shorturl.at/l8fD5",
-      "colors": {
-        "primary": "#0052CC"
-      },
-      "theme": "corporate-professional"
+      "theme" : {
+         "name": "atlassian"
+      }
     },
     "contact": {
       "email": "support@atlassian.com",
@@ -201,6 +200,7 @@ The application supports multi-tenant access through URL parameters. Each tenant
 
 ### Available Tenants
 The following tenant workspaces are available:
+- Atlassian: `http://localhost:3000?tenant=atlassian`
 - Acme: `http://localhost:3000?tenant=acme`
 - Nexus: `http://localhost:3000?tenant=nexus`
 - Harmony: `http://localhost:3000?tenant=harmony`

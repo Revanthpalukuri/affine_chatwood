@@ -29,22 +29,27 @@ export const useChatwoot = () => {
         window.chatwootSettings = {};
       }
 
+      console.log('Chatwoot widgetSettings:', widgetSettings);
+
       window.chatwootSettings = {
         websiteToken,
         baseUrl,
         ...widgetSettings,
         locale: 'en',
-        type: widgetSettings.type || 'standard',
-        position: widgetSettings.position || 'right',
+        type: widgetSettings.type || 'expanded_bubble',
+        position: widgetSettings.position || 'left',
         launcherTitle: widgetSettings.launcherTitle || 'Chat with us',
         showPopoverButton: widgetSettings.showPopoverButton ?? true,
         showEmojiPicker: widgetSettings.showEmojiPicker ?? true,
         showFileUpload: widgetSettings.showFileUpload ?? true,
-        widgetStyle: widgetSettings.widgetStyle || {},
+        widgetStyle: widgetSettings.widgetStyle || {
+          launcherIcon: 'https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?semt=ais_hybrid&w=740'
+        },
         preChatForm: currentTenant.chatwoot.preChatForm || {},
         customMessages: currentTenant.chatwoot.customMessages || {}
       };
 
+      console.log('Chatwoot widgetSettings:', widgetSettings);
       if (window.$chatwoot) {
         window.$chatwoot.toggleBubbleVisibility(false);
         window.$chatwoot.toggle(false);

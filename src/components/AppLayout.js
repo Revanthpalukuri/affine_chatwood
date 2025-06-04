@@ -26,7 +26,7 @@ const AppLayout = ({ children }) => {
       case 'harmony':
         return {
           title: 'Harmony Studio',
-          navItems: ['Portfolio', 'Services', 'Creative', 'Contact']
+          navItems: ['Portfolio', 'Services', 'Creative']
         };
       default:
         return {
@@ -55,7 +55,7 @@ const AppLayout = ({ children }) => {
 
   return (
     <div className={`app-layout theme-${currentTenant?.branding?.theme?.name || 'modern-minimalist'}`}>
-      {/* <header className="app-header">
+      <header className="app-header">
         <div className="header-content">
           <div className="logo-container">
             <img 
@@ -77,13 +77,13 @@ const AppLayout = ({ children }) => {
             ))}
           </nav>
         </div>
-      </header> */}
+      </header>
 
       <main className="app-main">
         {children}
       </main>
 
-      {/* <footer className="app-footer">
+      <footer className="app-footer">
         <div className="footer-content">
           <p className="footer-text">{footerContent}</p>
           <div className="footer-links">
@@ -92,7 +92,7 @@ const AppLayout = ({ children }) => {
             <a href="#contact">Contact Us</a>
           </div>
         </div>
-      </footer> */}
+      </footer>
     </div>
   );
 };
