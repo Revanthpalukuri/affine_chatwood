@@ -632,6 +632,56 @@ app.get('/api/validate-tenant', (req, res) => {
   });
 });
 
+// New endpoint to serve dynamic Chatwoot script
+app.get('/api/chatwoot-script', (req, res) => {
+  const { tenant, subdomain } = req.query;
+  let tenantId = tenant;
+
+  // Check if subdomain is provided and not localhost
+  if (subdomain && subdomain !== 'localhost') {
+    tenantId = subdomain;
+  }
+
+  // Default to 'default' tenant if no tenant specified
+  if (!tenantId) {
+    tenantId = 'default';
+  }
+
+  // Get tenant configuration
+  const tenantConfig = tenants[tenantId];
+  if (!tenantConfig) {
+    tenantId = 'default';
+  }
+
+  const finalTenant = tenants[tenantId];
+  const chatwootConfig = finalTenant.chatwoot;
+
+  // Generate dynamic Chatwoot script
+  const script = `
+    (function(d,t) {
+      var BASE_URL="${chatwootConfig.baseUrl}";
+      var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=BASE_URL+"/packs/js/sdk.js";
+      g.defer = true;
+      g.async = true;
+      s.parentNode.insertBefore(g,s);
+      g.onload=function(){
+        window.chatwootSDK.run({
+          websiteToken: "${chatwootConfig.websiteToken}",
+          baseUrl: BASE_URL,
+          launcherTitle: "${chatwootConfig.launcherTitle}",
+          position: "${chatwootConfig.widgetSettings.position}",
+          type: "${chatwootConfig.widgetSettings.type}",
+          launcherIcon: "${chatwootConfig.widgetSettings.widgetStyle.launcherIcon}"
+        });
+      };
+    })(document,"script");
+  `;
+
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(script);
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({

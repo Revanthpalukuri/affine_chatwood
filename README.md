@@ -73,7 +73,7 @@ curl -X POST http://localhost:4000/api/tenants \
     "id": "atlassian",
     "name": "Atlassian",
     "branding": {
-      "logo": "https://shorturl.at/l8fD5",
+      "logo": "https://shorturl.at/D6cVT",
       "theme" : {
          "name": "atlassian"
       }

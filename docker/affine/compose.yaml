@@ -6,8 +6,9 @@ services:
     command:
       ['sh', '-c', 'node ./scripts/self-host-predeploy && node ./dist/index.js']
     ports:
-      - '3010:3010'
       - '5555:5555'
+    expose:
+      - "3010"
     depends_on:
       redis:
         condition: service_healthy
@@ -60,7 +61,7 @@ services:
       POSTGRES_DB: affine
       PGDATA: /var/lib/postgresql/data/pgdata
 
-  # Chatwoot Services
+  # # Chatwoot Services
   chatwoot_web:
     image: chatwoot/chatwoot:latest
     container_name: chatwoot_web
@@ -157,6 +158,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  affine_proxy:
+    image: nginx:latest
+    container_name: affine_proxy
+    ports:
+      - '3010:80'
+    depends_on:
+      - affine
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    restart: unless-stopped
 
 networks:
   default:
